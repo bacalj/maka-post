@@ -50,3 +50,47 @@ function maka_function(){
     wp_insert_post( $new_post );
   }
 }
+
+/*
+  Create a settings page to turn on and off the functionality
+  Thanks, http://wpsettingsapi.jeroensormani.com/
+*/
+
+
+//create the options page
+function makapost_custom_admin_menu() {
+    add_options_page(
+      'MakaPost',             //page title
+      'MakaPost Options',     //menu title
+      'manage_options',       //capabitlity
+      'makapost-plugin',      //menu slug
+      'makapost_options_page' //callback function
+    );
+
+    add_settings_field(
+      'makapost_toggle', //id
+    	'Toggle MakaPost functionality', //title
+    	'makapost_options_page', //callback
+    	'makapost-plugin' //page
+    );
+}
+
+function makapost_options_page() {
+    ?>
+    <div class="wrap">
+        <h2>MakaPost Options</h2>
+        <form action="options.php" method="post">
+          <?php settings_fields('makapost_options'); ?>
+          <?php do_settings_sections('makapost-plugin'); ?>
+          <input class="button-primary" name="Submit" type="submit" value="<?php esc_attr_e('Save'); ?>" />
+        </form>
+    </div>
+    <?php
+}
+add_action( 'admin_menu', 'makapost_custom_admin_menu' );
+
+//register the settings field
+function register_and_build_fields() {
+  register_setting('makapost_options', 'makapost_toggle', 'validate_setting');
+}
+add_action('admin_init', 'register_and_build_fields');
