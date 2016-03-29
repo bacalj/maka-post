@@ -17,7 +17,6 @@ function maka_function(){
 
   global $ninja_forms_processing;
 
-  //$form_title_string = $ninja_forms_processing->data['form']['form_title'];
   $all_fields = $ninja_forms_processing->get_all_fields();
 
   $content_as_array = [];
@@ -29,9 +28,20 @@ function maka_function(){
         array_push($content_as_array, $chunk);
       }
     }
-    $content = implode('<br>', $content_as_array);
-    echo $content;
+
+    // Gather post data.
+    $maka_content = implode('<br>', $content_as_array);
+    $form_title_string = $ninja_forms_processing->data['form']['form_title'];
+    $datestring = date('m j y');
+
+    $new_post = array(
+        'post_title'    => 'Submission from: '. $form_title_string . ': ' . $datestring,
+        'post_content'  => $maka_content,
+        'post_status'   => 'private'
+    );
+
+    wp_insert_post( $new_post );
   }
 
-  die();
+  //die();
 }
