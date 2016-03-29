@@ -41,7 +41,7 @@ function maka_function(){
       // Smoosh array into content and add a title for the post
       $maka_content = implode('<br>', $content_as_array);
       $form_title_string = $ninja_forms_processing->data['form']['form_title'];
-      $datestring = date('m j y');
+      $datestring = date('U');
 
       // set up and create the post
       $new_post = array(
