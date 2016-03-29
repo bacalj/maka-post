@@ -28,7 +28,7 @@ function maka_function(){
     $all_fields = $ninja_forms_processing->get_all_fields();
 
     //pull all the fields as keystring -> valuestring into an array
-    $content_as_array = [];
+    $content_as_array = array();
     if( is_array( $all_fields ) ){
       foreach( $all_fields as $field_id => $user_value ){
         $field_title = $ninja_forms_processing->data['field_data'][$field_id]['data']['label'];
@@ -66,52 +66,51 @@ if( function_exists('acf_add_options_page') ) {
 }
 
 //acf field for option
-if( function_exists('acf_add_local_field_group') ):
+if( function_exists('acf_add_local_field_group') ) {
 
-acf_add_local_field_group(array (
-	'key' => 'group_56fad0824d0a8',
-	'title' => 'Maka Post Options',
-	'fields' => array (
-		array (
-			'key' => 'field_56fad0a1f3562',
-			'label' => 'Turn submitted forms into posts',
-			'name' => 'maka',
-			'type' => 'radio',
-			'instructions' => '',
-			'required' => 0,
-			'conditional_logic' => 0,
-			'wrapper' => array (
-				'width' => '',
-				'class' => '',
-				'id' => '',
-			),
-			'choices' => array (
-				'yes' => 'yes',
-				'no' => 'no',
-			),
-			'other_choice' => 0,
-			'save_other_choice' => 0,
-			'default_value' => '',
-			'layout' => 'horizontal',
-		),
-	),
-	'location' => array (
-		array (
-			array (
-				'param' => 'options_page',
-				'operator' => '==',
-				'value' => 'makapost-general-settings',
-			),
-		),
-	),
-	'menu_order' => 0,
-	'position' => 'normal',
-	'style' => 'default',
-	'label_placement' => 'top',
-	'instruction_placement' => 'label',
-	'hide_on_screen' => '',
-	'active' => 1,
-	'description' => '',
-));
-
-endif;
+  acf_add_local_field_group(array (
+  	'key' => 'group_56fad0824d0a8',
+  	'title' => 'Maka Post Options',
+  	'fields' => array (
+  		array (
+  			'key' => 'field_56fad0a1f3562',
+  			'label' => 'Turn submitted forms into posts',
+  			'name' => 'maka',
+  			'type' => 'radio',
+  			'instructions' => '',
+  			'required' => 0,
+  			'conditional_logic' => 0,
+  			'wrapper' => array (
+  				'width' => '',
+  				'class' => '',
+  				'id' => '',
+  			),
+  			'choices' => array (
+  				'yes' => 'yes',
+  				'no' => 'no',
+  			),
+  			'other_choice' => 0,
+  			'save_other_choice' => 0,
+  			'default_value' => '',
+  			'layout' => 'horizontal',
+  		),
+  	),
+  	'location' => array (
+  		array (
+  			array (
+  				'param' => 'options_page',
+  				'operator' => '==',
+  				'value' => 'makapost-general-settings',
+  			),
+  		),
+  	),
+  	'menu_order' => 0,
+  	'position' => 'normal',
+  	'style' => 'default',
+  	'label_placement' => 'top',
+  	'instruction_placement' => 'label',
+  	'hide_on_screen' => '',
+  	'active' => 1,
+  	'description' => '',
+  ));
+}
