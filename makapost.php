@@ -35,7 +35,7 @@ function maka_function(){
     $datestring = date('m j y');
 
     $new_post = array(
-        'post_title'    => 'Submission from: '. $form_title_string . ': ' . $datestring,
+        'post_title'    => $form_title_string . ' submission on ' . $datestring,
         'post_content'  => $maka_content,
         'post_status'   => 'private'
     );
