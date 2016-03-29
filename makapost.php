@@ -20,77 +20,98 @@ add_action( 'init', 'add_makapost' );
 
 function maka_function(){
 
-  global $ninja_forms_processing;
+  $maka = get_field('maka', 'option');;
+  if ($maka == 'yes'){
 
-  $all_fields = $ninja_forms_processing->get_all_fields();
+    global $ninja_forms_processing;
 
-  //pull all the fields as keystring -> valuestring into an array
-  $content_as_array = [];
-  if( is_array( $all_fields ) ){
-    foreach( $all_fields as $field_id => $user_value ){
-      $field_title = $ninja_forms_processing->data['field_data'][$field_id]['data']['label'];
-      $chunk = '<br><b>'. $field_title . ':</b><br>' . $user_value . '<br>';
-      if ( $field_title != 'Submit' ) {
-        array_push($content_as_array, $chunk);
+    $all_fields = $ninja_forms_processing->get_all_fields();
+
+    //pull all the fields as keystring -> valuestring into an array
+    $content_as_array = [];
+    if( is_array( $all_fields ) ){
+      foreach( $all_fields as $field_id => $user_value ){
+        $field_title = $ninja_forms_processing->data['field_data'][$field_id]['data']['label'];
+        $chunk = '<br><b>'. $field_title . ':</b><br>' . $user_value . '<br>';
+        if ( $field_title != 'Submit' ) {
+          array_push($content_as_array, $chunk);
+        }
       }
+
+      // Smoosh array into content and add a title for the post
+      $maka_content = implode('<br>', $content_as_array);
+      $form_title_string = $ninja_forms_processing->data['form']['form_title'];
+      $datestring = date('m j y');
+
+      // set up and create the post
+      $new_post = array(
+          'post_title'    => $form_title_string . ' submission | ' . $datestring,
+          'post_content'  => $maka_content,
+          'post_status'   => 'private'
+      );
+      wp_insert_post( $new_post );
     }
-
-    // Smoosh array into content and add a title for the post
-    $maka_content = implode('<br>', $content_as_array);
-    $form_title_string = $ninja_forms_processing->data['form']['form_title'];
-    $datestring = date('m j y');
-
-    // set up and create the post
-    $new_post = array(
-        'post_title'    => $form_title_string . ' submission | ' . $datestring,
-        'post_content'  => $maka_content,
-        'post_status'   => 'private'
-    );
-
-    wp_insert_post( $new_post );
   }
 }
 
-/*
-  Create a settings page to turn on and off the functionality
-  Thanks, http://wpsettingsapi.jeroensormani.com/
-*/
-
-
 //create the options page
-function makapost_custom_admin_menu() {
-    add_options_page(
-      'MakaPost',             //page title
-      'MakaPost Options',     //menu title
-      'manage_options',       //capabitlity
-      'makapost-plugin',      //menu slug
-      'makapost_options_page' //callback function
-    );
-
-    add_settings_field(
-      'makapost_toggle', //id
-    	'Toggle MakaPost functionality', //title
-    	'makapost_options_page', //callback
-    	'makapost-plugin' //page
-    );
+if( function_exists('acf_add_options_page') ) {
+	acf_add_options_page(array(
+		'page_title' 	=> 'MakaPost Options',
+		'menu_title'	=> 'Form Submission Options',
+		'menu_slug' 	=> 'makapost-general-settings',
+		'capability'	=> 'edit_posts',
+		'redirect'		=> false
+	));
 }
 
-function makapost_options_page() {
-    ?>
-    <div class="wrap">
-        <h2>MakaPost Options</h2>
-        <form action="options.php" method="post">
-          <?php settings_fields('makapost_options'); ?>
-          <?php do_settings_sections('makapost-plugin'); ?>
-          <input class="button-primary" name="Submit" type="submit" value="<?php esc_attr_e('Save'); ?>" />
-        </form>
-    </div>
-    <?php
-}
-add_action( 'admin_menu', 'makapost_custom_admin_menu' );
+//acf field for option
+if( function_exists('acf_add_local_field_group') ):
 
-//register the settings field
-function register_and_build_fields() {
-  register_setting('makapost_options', 'makapost_toggle', 'validate_setting');
-}
-add_action('admin_init', 'register_and_build_fields');
+acf_add_local_field_group(array (
+	'key' => 'group_56fad0824d0a8',
+	'title' => 'Maka Post Options',
+	'fields' => array (
+		array (
+			'key' => 'field_56fad0a1f3562',
+			'label' => 'Turn submitted forms into posts',
+			'name' => 'maka',
+			'type' => 'radio',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array (
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'choices' => array (
+				'yes' => 'yes',
+				'no' => 'no',
+			),
+			'other_choice' => 0,
+			'save_other_choice' => 0,
+			'default_value' => '',
+			'layout' => 'horizontal',
+		),
+	),
+	'location' => array (
+		array (
+			array (
+				'param' => 'options_page',
+				'operator' => '==',
+				'value' => 'makapost-general-settings',
+			),
+		),
+	),
+	'menu_order' => 0,
+	'position' => 'normal',
+	'style' => 'default',
+	'label_placement' => 'top',
+	'instruction_placement' => 'label',
+	'hide_on_screen' => '',
+	'active' => 1,
+	'description' => '',
+));
+
+endif;
